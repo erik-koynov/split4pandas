@@ -8,7 +8,7 @@ class SplitGenerator:
     def __init__(self, dataset: pd.DataFrame,
                  mode: ModelSelectionMode = ModelSelectionMode.TRAINTEST,
                  stratify: Union[str, pd.Series] = None):
-        self.input_ds = dataset.copy().reset_index(drop=True)
+        self.input_ds = dataset.copy().reset_index(inplace=False, drop=True)
         self.mode = mode
 
         if isinstance(stratify, str):
