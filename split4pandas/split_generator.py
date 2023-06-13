@@ -1,15 +1,12 @@
 from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 import pandas as pd
 from typing import Union
-
-class ModelSelectionMode:
-    KFOLD = 1
-    TRAINTEST = 2
+from .model_selection_mode import ModelSelectionMode
 
 
 class SplitGenerator:
     def __init__(self, dataset: pd.DataFrame,
-                 mode: int = ModelSelectionMode.TRAINTEST,
+                 mode: ModelSelectionMode = ModelSelectionMode.TRAINTEST,
                  stratify: Union[str, pd.Series] = None):
         self.input_ds = dataset.copy().reset_index(drop=True)
         self.mode = mode
@@ -29,7 +26,10 @@ class SplitGenerator:
 
 
     @staticmethod
-    def split_generator(dataset, test_size=0.2, stratify=None, mode: int = ModelSelectionMode.TRAINTEST):
+    def split_generator(dataset,
+                        test_size=0.2,
+                        stratify=None,
+                        mode: ModelSelectionMode = ModelSelectionMode.TRAINTEST):
         dataset_index = list(dataset.index)
         if mode == ModelSelectionMode.KFOLD:
 
@@ -54,13 +54,3 @@ class SplitGenerator:
 
         for train, test in splits:
             yield train, test
-
-if __name__=="__main__":
-    import numpy as np
-    df = pd.DataFrame({"a": list(range(10)),"b": np.random.random(10)>0.5})
-    print(df.b.value_counts())
-    split_generator = SplitGenerator(df, stratify='b', mode=ModelSelectionMode.KFOLD)
-
-    for training_set, test_set in split_generator(test_size=0.2):
-        print("training set: ", training_set)
-        print("test_set: ", test_set)
